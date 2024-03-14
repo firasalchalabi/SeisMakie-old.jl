@@ -37,6 +37,8 @@ Return the figure and axis corresponding to d.
 julia> d = SeisLinearEvents();
 julia> f, ax = SeisPlotTX(d);
 ```
+
+Author: Firas Al Chalabi (2024)
 """
 function SeisPlotTX(d;
                     fig=nothing, gx=nothing, ox=0, dx=1, oy=0, dy=1, xcur=1.2, wiggle_trace_increment=1,
@@ -59,6 +61,9 @@ function SeisPlotTX(d;
                                trace_width=trace_width, cmap=cmap)
 
         Colorbar(fig[1, 2], overlay)
+
+        xlims!(ax, low=ox, high=ox+size(d,2)*dx)
+
     elseif style == "wiggles" || style == "wiggle"
         if !isnothing(gx)
             ox = gx[1]
@@ -70,12 +75,16 @@ function SeisPlotTX(d;
                     wiggle_line_color=wiggle_line_color,
                     wiggle_fill_color=wiggle_fill_color,
                     trace_width=trace_width)
+
+        xlims!(ax, low=ox-dx, high=ox+size(d,2)*dx)
+
     else
         img = seisimage!(ax, d; ox=ox, dx=dx, oy=oy, dy=dy, pclip=pclip, vmin=vmin, vmax=vmax, cmap=cmap)
         Colorbar(fig[1,2], img)
+
+        xlims!(ax, low=ox, high=ox+size(d,2)*dx)
     end
 
-    xlims!(ax, low=ox-dx, high=ox+size(d,2)*dx)
     return fig, ax
 
 end
